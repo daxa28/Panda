@@ -1,7 +1,7 @@
 FROM node:18.16.1 AS builder
 WORKDIR /app
 COPY . .
-RUN yarn run build
+RUN npm install && yarn run build
 
 FROM node:18.16.1
 WORKDIR /app
