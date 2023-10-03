@@ -1,0 +1,54 @@
+@use "sass:map";
+@import "../../assets/styles/variables.scss";
+
+.title {
+  text-align: center;
+}
+
+.image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+
+  img {
+    width: 160px;
+  }
+}
+
+.block {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  .btn {
+    display: flex;
+    justify-content: center;
+  }
+
+  .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 12vh;
+    min-width: 290px;
+    max-width: 450px;
+    margin: 10px auto;
+    padding: 20px;
+    color: map.get($colors, white);
+    background-color: map.get($colors, lilac);
+    box-shadow: 3px 3px 15px map.get($colors, success);
+    @include fluidFontSize(14px, 24px, 480px, 1280px, 14px);
+    animation: myAnim 2s ease 0s 1 normal forwards;
+  }
+}
+
+@keyframes myAnim {
+  0% {
+    transform: scale(0.5);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}

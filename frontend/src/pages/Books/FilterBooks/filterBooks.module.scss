@@ -1,0 +1,49 @@
+@use "sass:map";
+@import "../../../assets/styles/variables.scss";
+
+.title {
+  margin: 2vh 0;
+  text-align: center;
+  width: 100%;
+}
+.search {
+  display: flex;
+  justify-content: center;
+  margin: 2vh;
+  flex-wrap: wrap;
+}
+
+.sort {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 2rem;
+}
+
+.random {
+  display: flex;
+  justify-content: center;
+  margin: 2vh;
+}
+.content {
+  margin: 6vh 0;
+
+  .books {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    column-gap: 30px;
+    row-gap: 50px;
+  }
+  .loadMore {
+    margin: 4vh 0;
+    text-align: center;
+  }
+  .image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5vh;
+    img {
+      width: 360px;
+    }
+  }
+}

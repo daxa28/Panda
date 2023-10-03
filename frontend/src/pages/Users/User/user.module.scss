@@ -1,0 +1,56 @@
+@use "sass:map";
+@import "../../../assets/styles/variables.scss";
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 2vh 0;
+  padding: 1vh 2vh;
+  border: 0.3vh solid map.get($colors, dark-grey);
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .name {
+    text-shadow: 0 0 10px map.get($colors, lilac);
+    @include fluidFontSize(14px, 18px, 480px, 1280px, 14px);
+    margin: 10px 0;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+
+  .email {
+    @include fluidFontSize(14px, 16px, 480px, 1280px, 14px);
+    margin: 10px 0;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+
+  .datetime {
+    @include fluidFontSize(10px, 14px, 480px, 1280px, 14px);
+    margin-right: 1vh;
+  }
+
+  &:hover {
+    box-shadow: 0 0 20px map.get($colors, success);
+  }
+  .id {
+    text-align: center;
+    margin-right: 2vh;
+    color: map.get($colors, lilac);
+  }
+}
+
+.image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 2vh;
+
+  img {
+    width: 60px;
+  }
+}

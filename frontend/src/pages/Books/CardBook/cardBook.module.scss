@@ -1,0 +1,41 @@
+@use "sass:map";
+@import "../../../assets/styles/variables.scss";
+
+.book {
+  display: grid;
+  grid-auto-flow: row;
+  grid-template: auto 1fr minmax(40px, auto) / 1fr;
+  padding: 5%;
+  box-shadow: 0 0 5px map.get($colors, blue);
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 0 10px map.get($colors, dark-grey);
+  }
+
+  .title {
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1vh 0;
+    img {
+      width: 120px;
+      box-shadow: 2px 2px 5px map.get($colors, dark-grey);
+    }
+  }
+
+  .authors {
+    text-align: center;
+  }
+
+  .category {
+    margin: 1vh;
+    text-align: center;
+    color: map.get($colors, dark-blue);
+    letter-spacing: 2px;
+  }
+}

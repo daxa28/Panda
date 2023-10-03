@@ -1,0 +1,19 @@
+@use "sass:map";
+@import "../../../assets/styles/variables.scss";
+
+.input {
+  min-width: 15rem;
+  border: 0.2vh solid #575757;
+  padding: 0.5rem 1rem;
+  max-width: 20rem;
+  margin: 0.9rem 1rem;
+  box-shadow: 1px 2px 3px map.get($colors, dark-grey);
+
+  &:hover {
+    box-shadow: 0 0 3px #9aa4d0;
+  }
+  &:focus {
+    border: 2px solid #9aa4d0;
+    outline-style: none;
+  }
+}

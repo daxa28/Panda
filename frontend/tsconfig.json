@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "rootDirs": ["src", "jest"],
+    "outDir": "build",
+    "lib": ["dom", "esnext"],
+    // Сюда будут включены все пакеты только из массива
+    // node_modules/@types — путь по умолчанию. Обязательно, иначе будет проигнорировано.
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "skipLibCheck": true, // Пропустить проверку типов файлов объявлений (.d.ts)
+    "esModuleInterop": true, // Создает помощники __importStar и __importDefault для совместимости с Babel
+    "allowSyntheticDefaultImports": true, // позволяет импортировать без поддержки по умолчанию
+    "strict": true, // включение всех опций строгого режима
+    "forceConsistentCasingInFileNames": true, // Принудительно использовать одинаковый регистр в именах файлов
+    "noFallthroughCasesInSwitch": true, // Выдать ошибку об возможных невалидных исходах в операторе switch.
+    "resolveJsonModule": true, // Позволяет импортировать модули с расширением ".json", что является обычной практикой в node проектах
+    "isolatedModules": true, // все файлы реализации должны быть модулями (что означает, что они имеют некоторую форму импорта/экспорта)
+    "noImplicitAny": true, // Выдать ошибку, если где-то указан тип "any"
+    "noImplicitThis": true, // RВызов ошибки в выражениях "this" с подразумеваемым типом "any"
+    "noUnusedLocals": true, // Вызывать ошибки в неиспользуемых локальных переменных
+    "noEmit": true, // Не создавать выходные файлы компилятора, такие как исходный код JavaScript, исходные карты или объявления.
+    "jsx": "react",
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules", // автоматически генерирует виртуальный .d.ts для каждого файла CSS
+        "options": {
+          "customTemplate": "./customTemplate.js"
+        }
+      }
+    ],
+    "preserveSymlinks": true,
+    "incremental": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "coverage",
+    "webpack.*.js",
+    "*.config.js",
+    "**/*.test.ts*"
+  ]
+}

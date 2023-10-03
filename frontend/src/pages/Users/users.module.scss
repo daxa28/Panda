@@ -1,0 +1,24 @@
+@use "sass:map";
+@import "../../assets/styles/variables.scss";
+
+.title {
+  text-align: center;
+  width: 100%;
+}
+
+.btns {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+
+  .right {
+    display: flex;
+    justify-content: space-between;
+  }
+}

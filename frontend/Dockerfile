@@ -1,0 +1,12 @@
+# Start from a base nodejs image.
+FROM node:18.17.1
+
+# Set the working directory inside the container.
+WORKDIR /app
+
+# Expose the port that the application listens on.
+EXPOSE 3008
+
+# Install/check modules and run application.
+# You can redefine this command (in docker-compose file, for example) to do something else.
+CMD npm install && npm run webpack-config-dev

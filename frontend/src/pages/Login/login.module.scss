@@ -1,0 +1,25 @@
+@use "sass:map";
+@import "../../assets/styles/variables.scss";
+
+.container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .title {
+    text-align: center;
+    width: 100%;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    margin: 5vh 0;
+  }
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    margin: 2vh 0;
+  }
+}

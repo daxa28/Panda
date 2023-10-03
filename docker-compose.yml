@@ -1,0 +1,77 @@
+version: "3.8"
+services:
+  db:
+    container_name: database
+    image: postgres:15.0-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${TYPEORM_USERNAME}
+      - POSTGRES_PASSWORD=${TYPEORM_PASSWORD}
+      - POSTGRES_DB=${TYPEORM_DATABASE}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - ${TYPEORM_PORT}:${TYPEORM_PORT}
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+    depends_on:
+      - db
+    restart: unless-stopped
+    ports:
+      - '${API_PORT}:3006'
+    environment:
+      - API_PORT=${API_PORT}
+      - API_HOST=${API_HOST}
+      - TYPEORM_CONNECTION=${TYPEORM_CONNECTION}
+      - TYPEORM_USERNAME=${TYPEORM_USERNAME}
+      - TYPEORM_PASSWORD=${TYPEORM_PASSWORD}
+      - TYPEORM_DATABASE=${TYPEORM_DATABASE}
+      - TYPEORM_PORT=${TYPEORM_PORT}
+      - TYPEORM_HOST=db
+      
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    command: bash -c "npm install && npm run webpack-config-dev"
+    # Используем bash, чтобы выполнить две команды последовательно.
+    # Сразу через "&&" выполняется только первая. Обе команды нам нужны,
+    # т.к. у нас может не быть node_modules (например, если мы только забрали проект с git`а),
+    # а без модулей запустить проект не получится.
+    # Если же устанавливать зависимости в Dockerfile, то это неудобно для разработки, т.к.
+    # они потом не "выбросятся" наружу, и можно разрабатывать для одних node_modules, а по-факту
+    # внутри контейнера они будут другими. Если это в какой-то момент станет критичным (будут ошибки),
+    # то поиск причины возникновения такой ошибки может занять очень много времени, поэтому делаем так.
+    # После того как модули установлены - можно оставить только команду для запуска,
+    # например "npm run webpack-config-dev".
+    # Эти docker-compose и Dockerfile для dev`а, который использовался при разработке - удобен именно для неё.
+    # Для прода нужно сначала скопировать package.json + package-lock.json внутрь,
+    # вызвать "npm install", а затем скопировать исходники внутрь.
+    # Но это будут уже другие Dockerfile и docker-compose, а так как это
+    # проект исключительно про frontend, который в проде просто билдится и кладётся
+    # в определённую папку на сервере nginx, то в их написании не вижу смысла, т.к.
+    # они просто не будут использоваться.
+    restart: unless-stopped
+    volumes:
+      - ./frontend/:/app/
+    ports:
+      - "${FRONT_NODE_PORT}:3008"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
+      
+networks:
+  default:
+    name: google_books
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

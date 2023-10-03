@@ -1,0 +1,42 @@
+{
+  "root": true,
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2015,
+    "ecmaFeatures": {
+      "jsx": true // JSX-compatible
+    }
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "plugins": ["@typescript-eslint", "react"],
+  "rules": {
+    "@typescript-eslint/no-var-requires": "off", // Чтобы избежать ошибки: "Require statement not part of import statement", если используются модули ES
+    "semi": ["error", "always"],
+    "quotes": ["error", "double"],
+    "indent": "off",
+    "no-fallthrough": "off", // запретить провал операторов случая
+    "no-multiple-empty-lines": [
+      1,
+      {
+        "max": 2
+      }
+    ], // запретить несколько пустых строк (выключено по умолчанию)
+    // "no-nested-ternary": 1, // запретить вложенные тернарные выражения (выключено по умолчанию)
+    "eqeqeq": 2, // требуют использования === и !==
+    "react/prop-types": "off" // Предотвратит проверку реквизитов в определении компонента React.
+  },
+  "settings": {
+    "react": {
+      "version": "detect" // "version": "detect" // Указали eslint-plugin-react, чтобы автоматически обнаружить последнюю версию react.
+    }
+  }
+}
