@@ -12,7 +12,8 @@ const STATIC_DIR = path.resolve(__dirname, "..", "static");
 
 const plugins = [
   new webpack.DefinePlugin({
-    "process.env.GOOGLE_API_KEY": JSON.stringify(process.env.GOOGLE_API_KEY),
+    "process.env.GOOGLE_API_KEY": process.env.GOOGLE_API_KEY,
+    "process.env.BACKEND_PORT": process.env.BACKEND_PORT,
   }),
 
   new FileManagerPlugin({

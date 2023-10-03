@@ -1,36 +1,61 @@
 version: "3.8"
 services:
   db:
-    container_name: database
+    container_name: db
     image: postgres:15.0-alpine
-    restart: always
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     environment:
-      - POSTGRES_USER=${TYPEORM_USERNAME}
-      - POSTGRES_PASSWORD=${TYPEORM_PASSWORD}
-      - POSTGRES_DB=${TYPEORM_DATABASE}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
-      - ${TYPEORM_PORT}:${TYPEORM_PORT}
+      - 127.0.0.1:${DB_PORT}:5432
+    networks:
+      - panda
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
 
   backend:
     container_name: backend
     build:
-      context: ./backend
+      context: backend
+      dockerfile: Dockerfile
+    command: bash -c "npm install && npm run start:dev"
     depends_on:
       - db
     restart: unless-stopped
+    volumes:
+      - ./backend/:/app/
     ports:
-      - '${API_PORT}:3006'
+      - 127.0.0.1:${BACKEND_PORT}:3006
     environment:
-      - API_PORT=${API_PORT}
-      - API_HOST=${API_HOST}
-      - TYPEORM_CONNECTION=${TYPEORM_CONNECTION}
-      - TYPEORM_USERNAME=${TYPEORM_USERNAME}
-      - TYPEORM_PASSWORD=${TYPEORM_PASSWORD}
-      - TYPEORM_DATABASE=${TYPEORM_DATABASE}
-      - TYPEORM_PORT=${TYPEORM_PORT}
-      - TYPEORM_HOST=db
+      - BACKEND_PORT=${BACKEND_PORT}
+      - FRONTEND_PORT=${FRONTEND_PORT}
+      - TYPEORM_DB_CONNECTION_TYPE=${TYPEORM_DB_CONNECTION_TYPE}
+      - TYPEORM_DB_USERNAME=${DB_USERNAME}
+      - TYPEORM_DB_PASSWORD=${DB_PASSWORD}
+      - TYPEORM_DB_DATABASE=${DB_NAME}
+      - TYPEORM_DB_PORT=${DB_PORT}
+      - TYPEORM_DB_HOST=${TYPEORM_DB_HOST}
+    networks:
+      - panda
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
       
   frontend:
     container_name: frontend
@@ -59,9 +84,14 @@ services:
     volumes:
       - ./frontend/:/app/
     ports:
-      - "${FRONT_NODE_PORT}:3008"
+      - 127.0.0.1:${FRONTEND_PORT}:3008
     environment:
+      - BACKEND_PORT=${BACKEND_PORT}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    networks:
+      - panda
+    depends_on:
+      - backend
     logging:
       driver: "json-file"
       options:
@@ -69,9 +99,8 @@ services:
         max-file: "10"
       
 networks:
-  default:
-    name: google_books
+  panda:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.21.0.0/16
+        - subnet: 172.22.0.0/16
