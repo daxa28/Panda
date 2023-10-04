@@ -82,7 +82,7 @@ const devServer = {
     progress: true, // Печатает ход компиляции в браузере в процентах
   },
 
-  port: 3008,
+  port: 3000,
   /**
    * Записывает файлы в выходной путь(default: false)
    * Build dir не очищается с помощью <output: {clean:true}>

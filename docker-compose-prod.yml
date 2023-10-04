@@ -1,0 +1,85 @@
+version: "3.8"
+services:
+  db:
+    container_name: db
+    image: postgres:15.0-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 127.0.0.1:${DB_PORT}:5432
+    networks:
+      - panda
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
+
+  backend:
+    container_name: backend
+    build:
+      context: backend
+      dockerfile: Dockerfile.prod
+    command: bash -c "npm run start:prod"
+    depends_on:
+      - db
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:${BACKEND_PORT}:3005
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT}
+      - FRONTEND_PORT=${FRONTEND_PORT}
+      - TYPEORM_DB_CONNECTION_TYPE=${TYPEORM_DB_CONNECTION_TYPE}
+      - TYPEORM_DB_USERNAME=${DB_USERNAME}
+      - TYPEORM_DB_PASSWORD=${DB_PASSWORD}
+      - TYPEORM_DB_DATABASE=${DB_NAME}
+      - TYPEORM_DB_PORT=${DB_PORT}
+      - TYPEORM_DB_HOST=${TYPEORM_DB_HOST}
+    networks:
+      - panda
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
+      
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile.prod
+    command: bash -c "npm run start-prod"
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:${FRONTEND_PORT}:3000
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    networks:
+      - panda
+    depends_on:
+      - backend
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
+      
+networks:
+  panda:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
